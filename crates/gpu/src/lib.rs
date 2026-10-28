@@ -3215,22 +3215,20 @@ mod tests {
             match stmt {
                 wgpu::naga::Statement::Return { .. } => direct += 1,
                 wgpu::naga::Statement::If { accept, reject, .. } => {
-                    for part in [accept, reject] {
-                        let (d, n) = returns_in(part);
-                        direct += d;
-                        nested += n;
-                    }
-                }
-                wgpu::naga::Statement::Block(body) => {
-                    let (d, n) = returns_in(body);
-                    direct += d;
-                    nested += n;
-                }
-                wgpu::naga::Statement::Loop { body, .. } => {
-                    let (d, n) = returns_in(body);
-                    direct += d;
-                    nested += n;
-                }
+            for part in [accept, reject] {
+                let (d, n) = returns_in(part);
+                nested += d + n;
+            }
+        }
+        wgpu::naga::Statement::Block(body) => {
+            let (d, n) = returns_in(body);
+            direct += d;
+            nested += n;
+        }
+        wgpu::naga::Statement::Loop { body, .. } => {
+            let (d, n) = returns_in(body);
+            nested += d + n;
+        }
                 _ => {}
             }
         }
